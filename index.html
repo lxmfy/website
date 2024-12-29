@@ -47,6 +47,7 @@
                     <pre><code class="language-python">lxmfy create mybot</code></pre>
                 </div>
             </div>
+            <p><a href="https://github.com/lxmfy/LXMFy/blob/main/CHANGELOG.md" class="link">View Changelog</a></p>
         </section>
 
         <section id="features">
@@ -242,11 +243,7 @@ Extension Points:
         </section>
     </main>
 
-    <footer>
-        <p>Created by Sudo-Ivan • Licensed under MIT</p>
-        <p>Contact Me: <code>870462b40219a8123ffd2eb17e60b091</code> (LXMF)</p>
-        <p>A <a href="https://quad4.io/lxmfy" class="link">Quad4 Project</a></p>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
@@ -297,6 +294,12 @@ Extension Points:
                         navLinks.classList.remove('active');
                     }
                 });
+            });
+
+        fetch('_includes/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
             });
     </script>
 </body>

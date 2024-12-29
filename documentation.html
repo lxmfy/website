@@ -332,11 +332,7 @@ transport.save_paths()</code></pre>
         </section>
     </main>
 
-    <footer>
-        <p>Created by Sudo-Ivan • Licensed under MIT</p>
-        <p>Contact Me: <code>870462b40219a8123ffd2eb17e60b091</code> (LXMF)</p>
-        <p>A <a href="https://quad4.io/lxmfy" class="link">Quad4 Project</a></p>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <!-- Prism JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -369,6 +365,12 @@ transport.save_paths()</code></pre>
                         navLinks.classList.remove('active');
                     }
                 });
+            });
+
+        fetch('_includes/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
             });
     </script>
 </body>
