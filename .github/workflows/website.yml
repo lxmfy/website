@@ -34,25 +34,36 @@ jobs:
       - name: Update version
         run: |
           cat > update-version.js << 'EOF'
+          const https = require('https');
           const fs = require('fs');
-          const { execSync } = require('child_process');
-          
+
           try {
-            // Get latest tag
-            const tag = execSync('git describe --tags --abbrev=0').toString().trim() || 'v0.0.0';
-            console.log('Latest tag:', tag);
-            
-            // Read HTML file
-            const filePath = 'index.html';
-            let html = fs.readFileSync(filePath, 'utf8');
-            
-            // Update version badge
-            const newBadge = `<div class="version-badge"><a href="https://github.com/lxmfy/lxmfy/releases/tag/${tag}">${tag}</a></div>`;
-            html = html.replace(/<div class="version-badge">.*?<\/div>/s, newBadge);
-            
-            // Write back to file
-            fs.writeFileSync(filePath, html);
-            console.log('Version updated successfully');
+            const options = {
+              hostname: 'github.com',
+              path: '/lxmfy/LXMFy/releases/latest',
+              headers: { 'User-Agent': 'Node.js' }
+            };
+
+            https.get(options, (res) => {
+              let data = '';
+              res.on('data', (chunk) => { data += chunk; });
+              res.on('end', () => {
+                const match = data.match(/releases\/tag\/(v[0-9]+\.[0-9]+\.[0-9]+)/);
+                const tag = match ? match[1] : 'v0.0.0';
+                console.log('Latest tag:', tag);
+
+                const filePath = 'index.html';
+                let html = fs.readFileSync(filePath, 'utf8');
+                
+                const newBadge = `<div class="version-badge"><a href="https://github.com/lxmfy/lxmfy/releases/tag/${tag}">${tag}</a></div>`;
+                html = html.replace(/<div class="version-badge">.*?<\/div>/s, newBadge);
+                
+                fs.writeFileSync(filePath, html);
+                console.log('Version updated successfully');
+              });
+            }).on('error', (error) => {
+              throw error;
+            });
           } catch (error) {
             console.error('Error:', error);
             process.exit(1);
