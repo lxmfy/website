@@ -48,7 +48,7 @@ jobs:
             const filePath = 'index.html';
             let html = fs.readFileSync(filePath, 'utf8');
 
-            const newBadge = `<div class="version-badge"><a href="https://github.com/lxmfy/LXMFy/releases/tags/${tag}">${tag}</a></div>`;
+            const newBadge = `<div class="version-badge"><a href="https://github.com/lxmfy/LXMFy/tags/${tag}">${tag}</a></div>`;
             html = html.replace(/<div class="version-badge">.*?<\/div>/s, newBadge);
 
             fs.writeFileSync(filePath, html);
