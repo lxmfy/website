@@ -1,4 +1,4 @@
-name: Deploy Website
+name: Deploy GitHub Pages
 
 on:
   push:
@@ -25,32 +25,32 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
+        
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-
+          
       - name: Update version
         run: |
           cat > update-version.js << 'EOF'
           const fs = require('fs');
           const { execSync } = require('child_process');
-
+          
           try {
-            let tag = 'v0.0.0';
-            try {
-              tag = execSync('git describe --tags --abbrev=0').toString().trim();
-            } catch {
-              console.log('No tags found, using default:', tag);
-            }
-
+            // Get latest tag
+            const tag = execSync('git describe --tags --abbrev=0').toString().trim() || 'v0.0.0';
+            console.log('Latest tag:', tag);
+            
+            // Read HTML file
             const filePath = 'index.html';
             let html = fs.readFileSync(filePath, 'utf8');
-
-            const newBadge = `<div class="version-badge"><a href="https://github.com/lxmfy/LXMFy/tags/${tag}">${tag}</a></div>`;
+            
+            // Update version badge
+            const newBadge = `<div class="version-badge"><a href="https://github.com/lxmfy/lxmfy/releases/tag/${tag}">${tag}</a></div>`;
             html = html.replace(/<div class="version-badge">.*?<\/div>/s, newBadge);
-
+            
+            // Write back to file
             fs.writeFileSync(filePath, html);
             console.log('Version updated successfully');
           } catch (error) {
@@ -59,15 +59,15 @@ jobs:
           }
           EOF
           node update-version.js
-
+          
       - name: Setup Pages
         uses: actions/configure-pages@v4
-
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
-
+          
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4 
