@@ -36,15 +36,9 @@ jobs:
         run: |
           cat > update-version.js << 'EOF'
           const fs = require('fs');
-          const { execSync } = require('child_process');
 
           try {
-            let tag;
-            try {
-              tag = execSync('git describe --tags --abbrev=0').toString().trim();
-            } catch {
-              tag = 'v0.0.0';
-            }
+            const tag = 'v0.3.3';
             console.log('Using tag:', tag);
 
             const filePath = 'index.html';
