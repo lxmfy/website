@@ -39,13 +39,18 @@ jobs:
           const { execSync } = require('child_process');
 
           try {
-            const tag = execSync('git describe --tags --abbrev=0').toString().trim();
-            console.log('Latest tag:', tag);
+            let tag;
+            try {
+              tag = execSync('git describe --tags --abbrev=0').toString().trim();
+            } catch {
+              tag = 'v0.0.0';
+            }
+            console.log('Using tag:', tag);
 
             const filePath = 'index.html';
             let html = fs.readFileSync(filePath, 'utf8');
             
-            const newBadge = `<div class="version-badge"><a href="https://github.com/lxmfy/lxmfy/releases/tag/${tag}">${tag}</a></div>`;
+            const newBadge = `<div class="version-badge"><a href="https://github.com/lxmfy/LXMFy/releases/tag/${tag}">${tag}</a></div>`;
             html = html.replace(/<div class="version-badge">.*?<\/div>/s, newBadge);
             
             fs.writeFileSync(filePath, html);
