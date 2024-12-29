@@ -30,8 +30,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="documentation">
-    <!-- Include navbar -->
-    <div id="navbar-placeholder"></div>
+    <!-- Include Header -->
+    <div id="header-placeholder"></div>
 
     <main>
         <section class="hero">
@@ -343,10 +343,10 @@ transport.save_paths()</code></pre>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     
     <script>
-        fetch('_includes/navbar.html')
+        fetch('_includes/header.html')
             .then(response => response.text())
             .then(data => {
-                document.getElementById('navbar-placeholder').innerHTML = data;
+                document.getElementById('header-placeholder').innerHTML = data;
                 const burgerMenu = document.querySelector('.burger-menu');
                 const navLinks = document.querySelector('.nav-links');
                 

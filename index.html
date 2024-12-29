@@ -29,8 +29,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Include navbar -->
-    <div id="navbar-placeholder"></div>
+    <!-- Include header --> 
+    <div id="header-placeholder"></div>
 
     <main>
         <section class="hero">
@@ -270,11 +270,11 @@ Extension Points:
             });
         });
 
-        // Load navbar
-        fetch('_includes/navbar.html')
+        // Load header
+        fetch('_includes/header.html')
             .then(response => response.text())
             .then(data => {
-                document.getElementById('navbar-placeholder').innerHTML = data;
+                document.getElementById('header-placeholder').innerHTML = data;
                 const burgerMenu = document.querySelector('.burger-menu');
                 const navLinks = document.querySelector('.nav-links');
                 
