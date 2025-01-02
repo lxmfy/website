@@ -965,7 +965,6 @@ code[class*="language-"] {
     background: var(--bg-hover);
 }
 
-/* Fix burger menu positioning */
 .nav-content {
     position: relative;
     max-width: 1200px;
@@ -976,7 +975,6 @@ code[class*="language-"] {
     align-items: center;
 }
 
-/* Improve mobile code block readability */
 .code-block {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
@@ -994,7 +992,6 @@ code[class*="language-"] {
     font-size: 0.9rem;
 }
 
-/* Fix feature cards on mobile */
 @media (max-width: 768px) {
     .features-grid {
         grid-template-columns: 1fr;
@@ -1018,7 +1015,6 @@ code[class*="language-"] {
         padding-top: 5rem;
     }
 
-    /* Adjust code blocks for mobile */
     .code-block.small {
         width: 90%;
         max-width: 350px;
@@ -1028,14 +1024,12 @@ code[class*="language-"] {
         font-size: 0.85rem;
     }
 
-    /* Ensure content doesn't overflow */
     main {
         overflow-x: hidden;
         width: 100%;
     }
 }
 
-/* Additional mobile adjustments */
 @media (max-width: 480px) {
     .nav-content {
         padding: 0.75rem 1rem;
@@ -1084,7 +1078,6 @@ code[class*="language-"] {
     margin-bottom: auto;
 }
 
-/* Update existing feature-card hover animation */
 .feature-card:hover .feature-list li {
     transform: translateX(5px);
     transition: transform 0.3s ease;

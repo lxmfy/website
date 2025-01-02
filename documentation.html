@@ -42,7 +42,6 @@
             <p>Learn how to create and deploy LXMF bots using LXMFy</p>
         </section>
 
-        <!-- Move search section here, right after hero -->
         <section class="search-section">
             <div class="search-container">
                 <input type="text" id="doc-search" placeholder="Search documentation...">
@@ -549,7 +548,6 @@ transport.save_paths()</code></pre>
                 }
             });
             
-            // Close search results when clicking outside
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.search-container')) {
                     searchResults.style.display = 'none';
