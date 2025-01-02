@@ -42,6 +42,14 @@
             <p>Learn how to create and deploy LXMF bots using LXMFy</p>
         </section>
 
+        <!-- Move search section here, right after hero -->
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" id="doc-search" placeholder="Search documentation...">
+                <div id="search-results" class="search-results"></div>
+            </div>
+        </section>
+
         <section id="quick-start">
             <h2><a href="#quick-start">Quick Start</a></h2>
             <div class="code-block">
@@ -490,6 +498,66 @@ transport.save_paths()</code></pre>
             .then(data => {
                 document.getElementById('footer-placeholder').innerHTML = data;
             });
+
+        const searchDocs = () => {
+            const searchInput = document.getElementById('doc-search');
+            const searchResults = document.getElementById('search-results');
+            const sections = document.querySelectorAll('section:not(.search-section)');
+            
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                searchResults.innerHTML = '';
+                
+                if (searchTerm.length < 2) {
+                    searchResults.style.display = 'none';
+                    sections.forEach(section => section.style.display = 'block');
+                    return;
+                }
+                
+                let results = [];
+                sections.forEach(section => {
+                    const title = section.querySelector('h2, h3')?.textContent || '';
+                    const content = section.textContent;
+                    
+                    if (title.toLowerCase().includes(searchTerm) || 
+                        content.toLowerCase().includes(searchTerm)) {
+                        results.push({
+                            title: title,
+                            id: section.id,
+                            preview: content.slice(0, 150) + '...'
+                        });
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+                
+                if (results.length > 0) {
+                    searchResults.style.display = 'block';
+                    results.forEach(result => {
+                        const resultElement = document.createElement('div');
+                        resultElement.className = 'search-result';
+                        resultElement.innerHTML = `
+                            <h4><a href="#${result.id}">${result.title}</a></h4>
+                            <p>${result.preview}</p>
+                        `;
+                        searchResults.appendChild(resultElement);
+                    });
+                } else {
+                    searchResults.style.display = 'block';
+                    searchResults.innerHTML = '<div class="no-results">No results found</div>';
+                }
+            });
+            
+            // Close search results when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-container')) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        };
+
+        searchDocs();
     </script>
 </body>
 </html> 
