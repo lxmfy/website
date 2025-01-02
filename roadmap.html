@@ -121,6 +121,13 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
+                document.getElementById('header-placeholder')
+                    .querySelectorAll('script')
+                    .forEach(script => {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = script.textContent;
+                        script.parentNode.replaceChild(newScript, script);
+                    });
             });
 
         fetch('_includes/footer.html')

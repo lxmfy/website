@@ -61,7 +61,7 @@ main {
 
 .hero {
     text-align: center;
-    padding: 2rem 0;
+    padding: 1rem 0;
 }
 
 .hero h1 {
@@ -70,7 +70,7 @@ main {
 }
 
 section {
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
 }
 
 h2 {
@@ -828,41 +828,40 @@ footer {
     }
 }
 
-/* Documentation specific adjustments */
 .documentation main {
-    padding: 4rem 1rem 2rem;  /* Reduced from 6rem */
+    padding: 4rem 1rem 2rem;
 }
 
 .documentation section {
-    margin-bottom: 2rem;  /* Reduced from 3rem */
+    margin-bottom: 2rem;
 }
 
 .documentation h2 {
-    margin-bottom: 1.5rem;  /* Reduced from 2rem */
+    margin-bottom: 1.5rem;
 }
 
 .documentation .reference-card {
-    padding: 1.5rem;  /* Reduced from 2rem */
-    margin-top: 2rem;  /* Reduced from 3rem */
+    padding: 1.5rem;
+    margin-top: 2rem;
 }
 
 .documentation .code-block {
-    margin: 1rem 0;  /* Reduced from 2rem */
+    margin: 1rem 0;
 }
 
 .documentation .reference-grid {
-    gap: 1.5rem;  /* Reduced from 2rem */
-    margin-bottom: 1.5rem;  /* Reduced from 2rem */
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 @media (max-width: 768px) {
     .documentation .reference-card {
-        margin-top: 1.5rem;  /* Reduced from 2rem */
-        padding: 1rem;  /* Reduced from 1.5rem */
+        margin-top: 1.5rem;
+        padding: 1rem;
     }
     
     .documentation section {
-        margin-bottom: 1.5rem;  /* Reduced from 2rem */
+        margin-bottom: 1.5rem;
     }
 }
 
