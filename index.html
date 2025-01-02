@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+
     <!-- Primary Meta Tags -->
     <title>LXMFy - LXMF Bot Framework</title>
     <meta name="title" content="LXMFy - LXMF Bot Framework">
@@ -37,7 +40,9 @@
             <h1>LXMFy</h1>
             <p>Easily create <a class="link" href="https://github.com/markqvist/LXMF">LXMF</a> bots for the <a class="link" href="https://reticulum.network">Reticulum Network</a> with this framework.</p>
             <div class="version-badge">
-                <a href="https://github.com/lxmfy/lxmfy/releases/tag/v0.0.0">v0.0.0</a>
+                <a href="https://github.com/lxmfy/lxmfy/releases/latest" id="version-link">
+                    <span id="version-text">Loading...</span>
+                </a>
             </div>
             <div class="hero-commands">
                 <div class="code-block small">
@@ -54,28 +59,28 @@
             <h2>Features</h2>
             <div class="features-grid">
                 <div class="feature-card">
+                    <h3>Permission System</h3>
+                    <p>Role-based access control with hierarchical permissions</p>
+                </div>
+                <div class="feature-card">
                     <h3>Hot Reloading</h3>
                     <p>Cog system for modular bot development</p>
                 </div>
                 <div class="feature-card">
                     <h3>Moderation</h3>
-                    <p>Built-in commands for unban, stats, and more</p>
+                    <p>Built-in commands for user management</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Help System</h3>
+                    <p>Automatic command documentation and help</p>
                 </div>
                 <div class="feature-card">
                     <h3>Spam Protection</h3>
-                    <p>Rate limiting, cooldowns, warnings, and banning</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Flexible Commands</h3>
-                    <p>Customizable command prefix (yes you can disable it) and announcement intervals</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Persistent Storage</h3>
-                    <p>Built-in JSON storage system with extensible backend support so you can use your own storage system</p>
+                    <p>Advanced rate limiting and protection</p>
                 </div>
                 <div class="feature-card">
                     <h3>Transport Layer</h3>
-                    <p>Path discovery, link caching, and request handling for nomadnet nodes</p>
+                    <p>Path discovery and caching</p>
                 </div>
             </div>
         </section>
@@ -142,17 +147,24 @@
                 <pre><code class="language-python">from lxmfy import LXMFBot
 
 bot = LXMFBot(
-    name="MyBot",
+    name="BasicBot",
+    announce=600,  # Announce every 10 minutes
     command_prefix="/",
-    admins=["your_hash_here"],
-    announce=600
 )
 
-@bot.command(name="hello", description="Say hello")
-def hello(ctx):
-    ctx.reply("Hello!")
+@bot.command(name="ping", description="Test if bot is responsive")
+def ping(ctx):
+    ctx.reply("Pong!")
 
-bot.run()</code></pre>
+@bot.command(name="echo", description="Echo back your message")
+def echo(ctx):
+    if ctx.args:
+        ctx.reply(" ".join(ctx.args))
+    else:
+        ctx.reply("Please provide a message to echo")
+
+if __name__ == "__main__":
+    bot.run()</code></pre>
             </div>
         </section>
 
@@ -163,80 +175,98 @@ bot.run()</code></pre>
             <div class="reference-grid">
                 <div class="reference-card">
                     <h4>Core Module</h4>
-                    <p>Core bot functionality, message routing and transport system.</p>
+                    <p>Core bot functionality, message routing, permissions and command handling.</p>
                     <div class="code-block mobile-scroll">
                         <pre><code class="language-python">class LXMFBot:
-    def __init__(self):
-        self.transport = Transport()
-        self.storage = Storage()
-        
-    async def request_page(self, dest_hash, path):
-        return await self.transport.request_page(
-            dest_hash, path
-        )</code></pre>
+            def __init__(self, **kwargs):
+                self.transport = Transport()
+                self.storage = Storage()
+                self.permissions = PermissionManager()
+                self.help_system = HelpSystem()
+                
+            def command(self, name, **kwargs):
+                def decorator(func):
+                    cmd = Command(name=name, **kwargs)
+                    self.commands[name] = cmd
+                    return func
+                return decorator</code></pre>
                     </div>
                     <h5>Key Components</h5>
                     <ul>
                         <li><code>RNS/LXMF Integration</code> - Network handling</li>
-                        <li><code>Transport Layer</code> - Page requests and path handling</li>
+                        <li><code>Permission System</code> - Role-based access control</li>
+                        <li><code>Help System</code> - Command documentation</li>
+                        <li><code>Spam Protection</code> - Rate limiting and moderation</li>
                         <li><code>Storage System</code> - Persistent data handling</li>
                         <li><code>Extension System</code> - Hot-reloadable modules</li>
                     </ul>
                 </div>
-
+        
                 <div class="reference-card">
-                    <h4>Storage System</h4>
-                    <p>Extensible storage backend for persistent data.</p>
+                    <h4>Permission System</h4>
+                    <p>Role-based access control with hierarchical permissions.</p>
                     <div class="code-block mobile-scroll">
-                        <pre><code class="language-python">class StorageBackend:
-    def get(self, key: str, default=None):
-        pass
+                        <pre><code class="language-python">class DefaultPerms(Flag):
+            USE_BOT = auto()
+            SEND_MESSAGES = auto()
+            USE_COMMANDS = auto()
+            MANAGE_USERS = auto()
+            ALL = USE_BOT | SEND_MESSAGES | USE_COMMANDS | MANAGE_USERS
         
-    def set(self, key: str, value):
-        pass
+        @dataclass
+        class Role:
+            name: str
+            permissions: DefaultPerms
+            priority: int = 0
         
-    def delete(self, key: str):
-        pass
-        
-    def exists(self, key: str) -> bool:
-        pass
-        
-    def scan(self, prefix: str) -> list:
-        pass</code></pre>
+        class PermissionManager:
+            def create_role(self, name, permissions):
+                pass
+            def assign_role(self, user, role):
+                pass
+            def has_permission(self, user, perm):
+                pass</code></pre>
                     </div>
                     <h5>Features</h5>
                     <ul>
-                        <li><code>Custom Backends</code> - Pluggable storage systems</li>
-                        <li><code>JSON Storage</code> - Built-in file-based storage</li>
-                        <li><code>Key Scanning</code> - Prefix-based key lookup</li>
-                        <li><code>Cache Layer</code> - Memory caching support</li>
+                        <li><code>Role System</code> - Hierarchical roles</li>
+                        <li><code>Permission Flags</code> - Granular permissions</li>
+                        <li><code>Priority System</code> - Role precedence</li>
+                        <li><code>Persistence</code> - Stored role assignments</li>
                     </ul>
                 </div>
-
+        
                 <div class="reference-card">
-                    <h4>Framework Architecture</h4>
-                    <p>Core systems and extension points for framework development.</p>
+                    <h4>Help System</h4>
+                    <p>Dynamic command documentation and help formatting.</p>
                     <div class="code-block mobile-scroll">
-                        <pre><code class="language-python">Framework Components:
-├── core.py         # Message routing & bot core
-├── transport.py    # Extensible transport layer
-├── storage.py      # Storage backends
-├── commands.py     # Command system
-├── moderation.py   # Spam protection
-└── cogs_core.py    # Extension loading
-
-Extension Points:
-- Custom Request Handlers
-- Message Pipeline
-- Storage Backend
-- Event System</code></pre>
+                        <pre><code class="language-python">@dataclass
+        class CommandHelp:
+            name: str
+            description: str
+            usage: Optional[str]
+            examples: List[str]
+            category: str
+        
+        class HelpFormatter:
+            def format_command(self, command):
+                pass
+            def format_category(self, category):
+                pass
+        
+        @bot.command(
+            name="help",
+            description="Show command help",
+            usage="help [command]"
+        )</code></pre>
                     </div>
-                    <h5>Development Areas</h5>
+                    <h5>Features</h5>
                     <ul>
-                        <li><code>Request Types</code> - Custom network protocols</li>
-                        <li><code>Event System</code> - Additional event types</li>
-                        <li><code>Storage Systems</code> - Persistent data handling</li>
-                        <li><code>Network Layer</code> - RNS/LXMF integration</li>
+                        <li><code>Command Help</code> - Usage documentation</li>
+                        <li><code>Categories</code> - Command grouping</li>
+                        <li><code>Examples</code> - Usage examples</li>
+                        <li><code>Permissions</code> - Required permissions display</li>
+                        <li><code>Custom Formatting</code> - Flexible output</li>
                     </ul>
                 </div>
             </div>
@@ -267,7 +297,6 @@ Extension Points:
             });
         });
 
-        // Load header
         fetch('_includes/header.html')
             .then(response => response.text())
             .then(data => {
@@ -301,6 +330,29 @@ Extension Points:
             .then(data => {
                 document.getElementById('footer-placeholder').innerHTML = data;
             });
+
+        async function fetchLatestVersion() {
+            try {
+                const response = await fetch('https://api.github.com/repos/lxmfy/lxmfy/releases/latest');
+                const data = await response.json();
+                
+                if (data.tag_name) {
+                    const versionText = document.getElementById('version-text');
+                    const versionLink = document.getElementById('version-link');
+                    
+                    versionText.textContent = data.tag_name;
+                    
+                    versionLink.href = data.html_url;
+                    
+                    versionText.classList.add('version-loaded');
+                }
+            } catch (error) {
+                console.error('Failed to fetch version:', error);
+                document.getElementById('version-text').textContent = 'v0.4.2';
+            }
+        }
+
+        fetchLatestVersion();
     </script>
 </body>
 </html>

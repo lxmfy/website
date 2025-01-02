@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+
+    <title>Roadmap - LXMFy Bot Framework</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="roadmap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero">
+            <h1>Roadmap</h1>
+            <p>Future development plans for LXMFy</p>
+        </section>
+
+        <section class="roadmap">
+            <div class="timeline">
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-line"></div>
+                    <div class="version">v0.4.3</div>
+                    <div class="content">
+                        <h3>Run Command & Templates</h3>
+                        <p>Introducing <code>lxmfy run</code> command for direct template execution</p>
+                        <ul class="features">
+                            <li>Direct template execution</li>
+                            <li>Enhanced template system</li>
+                            <li>Quick start templates</li>
+                        </ul>
+                        <div class="status planned">Planned</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-line"></div>
+                    <div class="version">v0.4.4</div>
+                    <div class="content">
+                        <h3>Bot Analysis</h3>
+                        <p>New <code>lxmfy check</code> command for bot analysis and suggestions</p>
+                        <ul class="features">
+                            <li>Configuration validation</li>
+                            <li>Best practices checker</li>
+                            <li>Performance suggestions</li>
+                        </ul>
+                        <div class="status planned">Planned</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-line"></div>
+                    <div class="version">v0.4.5</div>
+                    <div class="content">
+                        <h3>Event System</h3>
+                        <p>Comprehensive event handling system</p>
+                        <ul class="features">
+                            <li>Custom event creation</li>
+                            <li>Event middleware</li>
+                            <li>Event logging</li>
+                        </ul>
+                        <div class="status planned">Planned</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-line"></div>
+                    <div class="version">v0.4.6</div>
+                    <div class="content">
+                        <h3>Middleware & Task Scheduler</h3>
+                        <p>Advanced middleware system and task scheduling</p>
+                        <ul class="features">
+                            <li>Request/Response middleware</li>
+                            <li>Cron-style scheduling</li>
+                            <li>Background tasks</li>
+                        </ul>
+                        <div class="status planned">Planned</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="400">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-line"></div>
+                    <div class="version">v0.4.7</div>
+                    <div class="content">
+                        <h3>Built-in Documentation</h3>
+                        <p>Integrated documentation and helper system</p>
+                        <ul class="features">
+                            <li>Interactive help</li>
+                            <li>Code examples</li>
+                            <li>Best practices guide</li>
+                        </ul>
+                        <div class="status planned">Planned</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            offset: 100,
+            once: true
+        });
+
+        // Load header and footer
+        fetch('_includes/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        fetch('_includes/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+</html>

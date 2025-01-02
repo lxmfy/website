@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
     
     <!-- Primary Meta Tags -->
     <title>Documentation - LXMFy Bot Framework</title>
@@ -83,6 +86,121 @@ def hello(ctx):
     ctx.reply("Hello!")
 
 bot.run()</code></pre>
+            </div>
+        </section>
+
+        <section id="permissions">
+            <h2><a href="#permissions">Permission System</a></h2>
+            <div class="reference-grid">
+                <div class="reference-card">
+                    <h4>Basic Setup</h4>
+                    <div class="code-block">
+<pre><code class="language-python">from lxmfy import LXMFBot, DefaultPerms
+
+bot = LXMFBot(
+    name="MyBot",
+    command_prefix="/",
+    admins=["admin_hash_here"],
+    announce=600,
+    permissions_enabled=True  # Enable the permission system
+)
+
+# Create moderator role with specific permissions
+bot.permissions.create_role(
+    name="moderator",
+    permissions=(
+        DefaultPerms.USE_BOT |
+        DefaultPerms.SEND_MESSAGES |
+        DefaultPerms.USE_COMMANDS |
+        DefaultPerms.MANAGE_USERS
+    ),
+    priority=50,  # Higher than default user, lower than admin
+    description="Can manage users and messages"
+)
+
+# Assign moderator role to specific LXMF hashes
+MODERATORS = [
+    "moderator_hash_1",
+    "moderator_hash_2"
+]
+
+for mod_hash in MODERATORS:
+    bot.permissions.assign_role(mod_hash, "moderator")</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Permission-Based Commands</h4>
+                    <div class="code-block">
+<pre><code class="language-python">@bot.command(
+    name="hello",
+    description="Say hello",
+    permissions=DefaultPerms.USE_COMMANDS
+)
+def hello(ctx):
+    ctx.reply("Hello!")
+
+@bot.command(
+    name="ban",
+    description="Ban a user",
+    permissions=DefaultPerms.MANAGE_USERS
+)
+def ban(ctx, user_hash):
+    if not ctx.bot.permissions.has_permission(
+        ctx.sender, 
+        DefaultPerms.MANAGE_USERS
+    ):
+        ctx.reply("You don't have permission to ban users")
+        return
+    
+    ctx.bot.spam_protection.ban_user(user_hash)
+    ctx.reply(f"User {user_hash} banned")</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Role Management</h4>
+                    <div class="code-block">
+<pre><code class="language-python">@bot.command(
+    name="roles",
+    description="List roles for a user",
+    permissions=DefaultPerms.MANAGE_USERS
+)
+def list_roles(ctx, user_hash=None):
+    user = user_hash or ctx.sender
+    if user in bot.permissions.user_roles:
+        roles = ", ".join(bot.permissions.user_roles[user])
+        ctx.reply(f"Roles for {user}: {roles}")
+    else:
+        ctx.reply(f"No custom roles for {user}")</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Default Permissions</h4>
+                    <ul>
+                        <li><code>USE_BOT</code> - Basic bot usage</li>
+                        <li><code>SEND_MESSAGES</code> - Send messages</li>
+                        <li><code>USE_COMMANDS</code> - Use commands</li>
+                        <li><code>MANAGE_USERS</code> - User management</li>
+                        <li><code>MANAGE_ROLES</code> - Role management</li>
+                        <li><code>MANAGE_BOT</code> - Bot configuration</li>
+                        <li><code>VIEW_STATS</code> - View statistics</li>
+                    </ul>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Role-based access control</li>
+                        <li>Hierarchical permissions</li>
+                        <li>Permission inheritance</li>
+                        <li>Priority system</li>
+                        <li>Custom role creation</li>
+                        <li>Persistent storage</li>
+                        <li>Command integration</li>
+                    </ul>
+                </div>
             </div>
         </section>
 
