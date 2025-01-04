@@ -85,14 +85,11 @@ bot = LXMFBot(
     rate_limit=5,               # Messages per minute
     cooldown=60,                # Seconds between commands
     max_warnings=3,             # Warnings before ban
-    warning_timeout=300         # Warning reset time (seconds)
-)
-
-@bot.command(name="hello", description="Say hello")
-def hello(ctx):
-    ctx.reply("Hello!")
-
-bot.run()</code></pre>
+    warning_timeout=300,        # Warning reset time (seconds)
+    first_message_enabled=True, # Enable first message handler
+    storage_type="sqlite",      # Use SQLite storage backend
+    storage_path="mybot.db"     # SQLite database path
+)</code></pre>
             </div>
         </section>
 
@@ -250,82 +247,22 @@ def admin_only(ctx):
             <h2><a href="#storage">Storage System</a></h2>
             <div class="reference-grid">
                 <div class="reference-card">
-                    <h4>Basic Storage Operations</h4>
+                    <h4>Storage Configuration</h4>
                     <div class="code-block">
-<pre><code class="language-python"># Basic get/set operations
-@bot.command(name="save")
-def save(ctx, key: str, value: str):
-    bot.storage.set(key, value)
-    ctx.reply(f"Saved {key}={value}")
-
-@bot.command(name="get")
-def get(ctx, key: str):
-    value = bot.storage.get(key, "Not found")
-    ctx.reply(f"{key}={value}")
-
-# Check if key exists
-@bot.command(name="exists")
-def exists(ctx, key: str):
-    exists = bot.storage.exists(key)
-    ctx.reply(f"Key {key} exists: {exists}")
-
-# Delete a key
-@bot.command(name="delete")
-def delete(ctx, key: str):
-    bot.storage.delete(key)
-    ctx.reply(f"Deleted {key}")
-
-# Scan for keys with prefix
-@bot.command(name="scan")
-def scan(ctx, prefix: str):
-    keys = bot.storage.scan(prefix)
-    ctx.reply(f"Found keys: {', '.join(keys)}")</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Custom Storage Backend</h4>
-                    <div class="code-block">
-<pre><code class="language-python">from lxmfy import StorageBackend
-
-class MyStorage(StorageBackend):
-    def get(self, key: str, default: Any = None) -> Any:
-        # Your implementation
-        pass
-
-    def set(self, key: str, value: Any) -> None:
-        # Your implementation
-        pass
-
-    def delete(self, key: str) -> None:
-        # Your implementation
-        pass
-
-    def exists(self, key: str) -> bool:
-        # Your implementation
-        pass
-
-    def scan(self, prefix: str) -> list:
-        # Your implementation
-        pass
-
-# Use custom storage
+<pre><code class="language-python"># JSON Storage (Default)
 bot = LXMFBot(
-    storage=Storage(MyStorage())
+    name="MyBot",
+    storage_type="json",
+    storage_path="storage.json"
+)
+
+# SQLite Storage
+bot = LXMFBot(
+    name="MyBot",
+    storage_type="sqlite",
+    storage_path="mybot.db"
 )</code></pre>
                     </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Storage Features</h4>
-                    <ul>
-                        <li>JSON file-based persistence</li>
-                        <li>In-memory caching</li>
-                        <li>Key-value storage</li>
-                        <li>Prefix scanning</li>
-                        <li>Custom backend support</li>
-                        <li>Error handling & logging</li>
-                    </ul>
                 </div>
             </div>
         </section>
@@ -365,14 +302,13 @@ bot.load_extension("cogs.mycog")</code></pre>
                 <div class="code-block">
 <pre><code class="language-python">@bot.received
 def on_message(message):
-    # Raw message attributes:
-    # message.lxmf - LXMF message
-    # message.reply() - Reply function
-    # message.sender - Sender hash
-    # message.content - Message content
-    # message.hash - Message hash
     print(f"From: {message.sender}")
-    print(f"Content: {message.content}")</code></pre>
+    print(f"Content: {message.content}")
+
+@bot.on_first_message()
+def welcome_message(sender, message):
+    bot.send(sender, "Welcome! Type /help to see available commands.")
+    return True  # Return True to indicate message was handled</code></pre>
                 </div>
             </div>
         </section>

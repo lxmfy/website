@@ -59,6 +59,14 @@
             <h2>Features</h2>
             <div class="features-grid">
                 <div class="feature-card">
+                    <h3>First Message Handler</h3>
+                    <p>Custom welcome messages for new users</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Storage Options</h3>
+                    <p>SQLite or JSON storage</p>
+                </div>
+                <div class="feature-card">
                     <h3>Permission System</h3>
                     <p>Role-based access control with hierarchical permissions</p>
                 </div>
@@ -76,7 +84,7 @@
                 </div>
                 <div class="feature-card">
                     <h3>Spam Protection</h3>
-                    <p>Advanced rate limiting and protection</p>
+                    <p>Rate limiting and protection</p>
                 </div>
                 <div class="feature-card">
                     <h3>Transport Layer</h3>
@@ -148,9 +156,17 @@
 
 bot = LXMFBot(
     name="BasicBot",
-    announce=600,  # Announce every 10 minutes
+    announce=600,
     command_prefix="/",
+    first_message_enabled=True,
+    storage_type="sqlite",
+    storage_path="bot.db"
 )
+
+@bot.on_first_message()
+def welcome(sender, message):
+    bot.send(sender, "Welcome! Type /help to see commands.")
+    return True
 
 @bot.command(name="ping", description="Test if bot is responsive")
 def ping(ctx):
