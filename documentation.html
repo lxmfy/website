@@ -299,19 +299,52 @@ bot.load_extension("cogs.mycog")</code></pre>
         </section>
 
         <section id="events">
-            <h2><a href="#events">Event Handling</a></h2>
-            <div class="reference-card">
-                <h4>Message Handling</h4>
-                <div class="code-block">
-<pre><code class="language-python">@bot.received
-def on_message(message):
-    print(f"From: {message.sender}")
-    print(f"Content: {message.content}")
+            <h2><a href="#events">Event System</a></h2>
+            <div class="reference-grid">
+                <div class="reference-card">
+                    <h4>Event Handling</h4>
+                    <div class="code-block">
+<pre><code class="language-python">@bot.events.on("message_received")
+async def on_message(event):
+    print(f"Message from: {event.data['sender']}")
+    print(f"Content: {event.data['content']}")
 
-@bot.on_first_message()
-def welcome_message(sender, message):
-    bot.send(sender, "Welcome! Type /help to see available commands.")
-    return True  # Return True to indicate message was handled</code></pre>
+@bot.events.on("custom_event", priority=EventPriority.HIGH)
+async def handle_custom_event(event):
+    print(f"Custom event data: {event.data}")
+
+# Dispatch custom event
+await bot.events.dispatch(Event("custom_event", {
+    "foo": "bar"
+}))</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Event Middleware</h4>
+                    <div class="code-block">
+<pre><code class="language-python">@bot.events.middleware
+async def log_events(event, next):
+    print(f"Event {event.name} started")
+    await next()
+    print(f"Event {event.name} completed")
+
+@bot.events.middleware("message_received")
+async def filter_messages(event, next):
+    if not event.data['content'].startswith('spam'):
+        await next()</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Built-in Events</h4>
+                    <ul>
+                        <li><code>message_received</code> - New message received</li>
+                        <li><code>command_executed</code> - Command execution</li>
+                        <li><code>error</code> - Error occurred</li>
+                        <li><code>startup</code> - Bot startup</li>
+                        <li><code>shutdown</code> - Bot shutdown</li>
+                    </ul>
                 </div>
             </div>
         </section>

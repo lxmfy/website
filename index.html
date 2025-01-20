@@ -152,7 +152,7 @@
         <section id="usage">
             <h3>Python Example</h3>
             <div class="code-block mobile-scroll">
-                <pre><code class="language-python">from lxmfy import LXMFBot
+                <pre><code class="language-python">from lxmfy import LXMFBot, Event, EventPriority
 
 bot = LXMFBot(
     name="BasicBot",
@@ -163,10 +163,9 @@ bot = LXMFBot(
     storage_path="bot.db"
 )
 
-@bot.on_first_message()
-def welcome(sender, message):
-    bot.send(sender, "Welcome! Type /help to see commands.")
-    return True
+@bot.events.on("message_received")
+async def on_message(event):
+    print(f"New message from: {event.data['sender']}")
 
 @bot.command(name="ping", description="Test if bot is responsive")
 def ping(ctx):
