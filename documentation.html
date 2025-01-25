@@ -427,6 +427,95 @@ transport.save_paths()</code></pre>
                 </div>
             </div>
         </section>
+
+        <section id="middleware">
+            <h2><a href="#middleware">Middleware System</a></h2>
+            <div class="reference-grid">
+                <div class="reference-card">
+                    <h4>Basic Usage</h4>
+                    <div class="code-block">
+<pre><code class="language-python">from lxmfy import LXMFBot, MiddlewareType
+
+bot = LXMFBot(name="MyBot")
+
+@bot.middleware.register(MiddlewareType.PRE_COMMAND)
+def log_commands(ctx):
+    print(f"Command received: {ctx.data}")
+    return ctx.data
+
+@bot.middleware.register(MiddlewareType.POST_COMMAND)
+def handle_errors(ctx):
+    if ctx.error:
+        print(f"Error in command: {ctx.error}")
+    return ctx.data</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Middleware Types</h4>
+                    <ul>
+                        <li><code>PRE_COMMAND</code> - Before command execution</li>
+                        <li><code>POST_COMMAND</code> - After command execution</li>
+                        <li><code>PRE_MESSAGE</code> - Before message processing</li>
+                        <li><code>POST_MESSAGE</code> - After message processing</li>
+                        <li><code>ERROR</code> - Error handling middleware</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="scheduler">
+            <h2><a href="#scheduler">Task Scheduler</a></h2>
+            <div class="reference-grid">
+                <div class="reference-card">
+                    <h4>Scheduling Tasks</h4>
+                    <div class="code-block">
+<pre><code class="language-python">@bot.scheduler.schedule("cleanup", "0 */2 * * *")  # Every 2 hours
+def cleanup_task():
+    print("Running cleanup...")
+
+@bot.scheduler.schedule("backup", "0 0 * * *")  # Daily at midnight
+async def backup_task():
+    await bot.storage.backup()
+
+# One-time task
+bot.scheduler.schedule_once("notification", 
+    lambda: print("Task complete!"), 
+    delay=3600  # 1 hour
+)</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Task Management</h4>
+                    <div class="code-block">
+<pre><code class="language-python"># List all tasks
+tasks = bot.scheduler.list_tasks()
+
+# Cancel task
+bot.scheduler.cancel_task("cleanup")
+
+# Pause/Resume task
+bot.scheduler.pause_task("backup")
+bot.scheduler.resume_task("backup")
+
+# Task status
+status = bot.scheduler.get_task_status("backup")</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Cron Expressions</h4>
+                    <ul>
+                        <li><code>* * * * *</code> - Every minute</li>
+                        <li><code>0 * * * *</code> - Every hour</li>
+                        <li><code>0 0 * * *</code> - Every day at midnight</li>
+                        <li><code>0 0 * * 0</code> - Every Sunday</li>
+                        <li><code>0 0 1 * *</code> - First of every month</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div id="footer-placeholder"></div>
