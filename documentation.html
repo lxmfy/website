@@ -305,16 +305,16 @@ bot.load_extension("cogs.mycog")</code></pre>
                     <h4>Event Handling</h4>
                     <div class="code-block">
 <pre><code class="language-python">@bot.events.on("message_received")
-async def on_message(event):
+def on_message(event):
     print(f"Message from: {event.data['sender']}")
     print(f"Content: {event.data['content']}")
 
 @bot.events.on("custom_event", priority=EventPriority.HIGH)
-async def handle_custom_event(event):
+def handle_custom_event(event):
     print(f"Custom event data: {event.data}")
 
 # Dispatch custom event
-await bot.events.dispatch(Event("custom_event", {
+bot.events.dispatch(Event("custom_event", {
     "foo": "bar"
 }))</code></pre>
                     </div>
@@ -324,15 +324,15 @@ await bot.events.dispatch(Event("custom_event", {
                     <h4>Event Middleware</h4>
                     <div class="code-block">
 <pre><code class="language-python">@bot.events.middleware
-async def log_events(event, next):
+def log_events(event, next):
     print(f"Event {event.name} started")
-    await next()
+    next()
     print(f"Event {event.name} completed")
 
 @bot.events.middleware("message_received")
-async def filter_messages(event, next):
+def filter_messages(event, next):
     if not event.data['content'].startswith('spam'):
-        await next()</code></pre>
+        next()</code></pre>
                     </div>
                 </div>
 
@@ -475,8 +475,8 @@ def cleanup_task():
     print("Running cleanup...")
 
 @bot.scheduler.schedule("backup", "0 0 * * *")  # Daily at midnight
-async def backup_task():
-    await bot.storage.backup()
+def backup_task():
+    bot.storage.backup()
 
 # One-time task
 bot.scheduler.schedule_once("notification", 
@@ -619,4 +619,4 @@ status = bot.scheduler.get_task_status("backup")</code></pre>
         searchDocs();
     </script>
 </body>
-</html> 
+</html>
