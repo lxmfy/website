@@ -516,6 +516,77 @@ status = bot.scheduler.get_task_status("backup")</code></pre>
                 </div>
             </div>
         </section>
+
+        <section id="attachments">
+            <h2><a href="#attachments">Attachment System</a></h2>
+            <div class="reference-grid">
+                <div class="reference-card">
+                    <h4>Basic Usage</h4>
+                    <div class="code-block">
+<pre><code class="language-python">from lxmfy import LXMFBot, Attachment, AttachmentType
+
+bot = LXMFBot(name="MyBot")
+
+@bot.command(name="send_file")
+def send_file(ctx):
+    # Create a file attachment
+    with open("example.txt", "rb") as f:
+        data = f.read()
+        attachment = Attachment(
+            type=AttachmentType.FILE,
+            name="example.txt",
+            data=data
+        )
+    
+    # Send message with attachment
+    bot.send_with_attachment(
+        ctx.sender,
+        "Here's your file!",
+        attachment
+    )</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Attachment Types</h4>
+                    <div class="code-block">
+<pre><code class="language-python">from lxmfy import AttachmentType
+
+# Available types
+AttachmentType.FILE   # For general files
+AttachmentType.IMAGE  # For image files
+AttachmentType.AUDIO  # For audio files
+
+# Image example
+image_attachment = Attachment(
+    type=AttachmentType.IMAGE,
+    name="picture.webp",
+    data=image_data,
+    format="webp"  # Optional format for images
+)
+
+# Audio example
+audio_attachment = Attachment(
+    type=AttachmentType.AUDIO,
+    name="sound.mp3",
+    data=audio_data,
+    format="0"  # Audio mode as string
+)</code></pre>
+                    </div>
+                </div>
+
+                <div class="reference-card">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Support for file attachments</li>
+                        <li>Image attachment support (WebP format)</li>
+                        <li>Audio attachment support</li>
+                        <li>Automatic attachment packing</li>
+                        <li>Integration with LXMF fields</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div id="footer-placeholder"></div>
