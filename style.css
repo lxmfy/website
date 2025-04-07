@@ -61,7 +61,10 @@ main {
 
 .hero {
     text-align: center;
-    padding: 1rem 0;
+    padding: 2rem 0 4rem 0;
+    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .hero h1 {
@@ -81,20 +84,23 @@ h2 {
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    gap: 0.5rem;
 }
 
 .feature-card {
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 2rem;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
     margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .feature-card:hover {
     transform: translateY(-5px);
+    background-color: var(--bg-secondary);
 }
 
 .feature-card h3 {
@@ -124,7 +130,7 @@ h2 {
 .code-block {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 1rem;
     margin: 1rem 0;
     overflow-x: auto;
@@ -467,7 +473,8 @@ footer {
 .reference-card {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-top: 3px solid var(--accent);
+    border-radius: 12px;
     padding: 2rem;
     margin-top: 3rem;
 }
@@ -538,14 +545,15 @@ footer {
 }
 
 .version-badge {
-    margin: 1rem 0;
+    margin: 1.5rem 0;
 }
 
 .version-badge a {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: var(--accent-color);
-    color: var(--bg-color);
+    background: var(--bg-secondary);
+    color: var(--accent);
+    border: 1px solid var(--accent);
     text-decoration: none;
     border-radius: 20px;
     font-weight: bold;
@@ -554,7 +562,9 @@ footer {
 
 .version-badge a:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(22, 22, 22, 0.2);
+    box-shadow: 0 4px 8px rgba(88, 166, 255, 0.2);
+    background: var(--accent);
+    color: var(--bg-primary);
 }
 
 #version-text {
@@ -698,7 +708,7 @@ footer {
     overflow: hidden;
     position: relative;
     width: 100%;
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 10px 0;
 }
 
@@ -741,7 +751,7 @@ footer {
 .slide a {
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 15px;
     display: block;
     text-decoration: none;
@@ -920,10 +930,11 @@ code[class*="language-"] {
 
 .hero-commands {
     max-width: 400px;
-    margin: 0 auto;
+    margin: 1.5rem auto 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 0.5rem;
 }
 
 .code-block.small {
@@ -978,7 +989,7 @@ code[class*="language-"] {
 .code-block {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 1rem;
     margin: 1rem 0;
     overflow-x: auto;
@@ -1110,7 +1121,7 @@ code[class*="language-"] {
     font-size: 1rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     color: var(--text-primary);
     transition: all 0.2s ease;
 }
@@ -1129,7 +1140,7 @@ code[class*="language-"] {
     right: 0;
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     margin-top: 0.5rem;
     max-height: 400px;
     overflow-y: auto;
