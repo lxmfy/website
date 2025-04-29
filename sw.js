@@ -14,6 +14,7 @@ const urlsToCache = [
   '/vendor/prism/prism-python.min.js',
   '/vendor/clipboard/clipboard.min.js',
   '/vendor/marked/marked.min.js',
+  '/vendor/fuse/fuse.min.js',
   'https://raw.githubusercontent.com/lxmfy/LXMFy/main/docs/quick-start.md',
   'https://raw.githubusercontent.com/lxmfy/LXMFy/main/docs/creating-bots.md',
   'https://raw.githubusercontent.com/lxmfy/LXMFy/main/docs/api.md'
