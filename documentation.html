@@ -31,8 +31,8 @@
     <link rel="manifest" href="/manifest.json">
 
     <!-- Prism CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="/vendor/prism/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="/vendor/prism/prism-line-numbers.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="documentation">
@@ -52,553 +52,167 @@
             </div>
         </section>
 
-        <section id="quick-start">
-            <h2><a href="#quick-start">Quick Start</a></h2>
-            <div class="code-block">
-                <pre><code class="language-python">pip install lxmfy</code></pre>
-            </div>
-            <p>Create a new bot:</p>
-            <div class="code-block">
-<pre><code class="language-python"># Basic usage
-lxmfy create mybot
-
-# With options
-lxmfy create --name "My Cool Bot" --output path/to/bot.py
-lxmfy create mybot .  # Create in current directory
-
-# Analyze bot file
-lxmfy analyze bot.py
-
-# All options
-lxmfy create [bot_name] [directory]
-  --name "Bot Name"    # Custom bot name
-  --output path/to/    # Custom output location</code></pre>
-            </div>
-        </section>
-
-        <section id="basic-usage">
-            <h2><a href="#basic-usage">Basic Usage</a></h2>
-            <div class="code-block">
-<pre><code class="language-python">from lxmfy import LXMFBot
-
-bot = LXMFBot(
-    name="MyBot",                # Bot display name
-    command_prefix="/",          # Command prefix
-    admins=["your_hash_here"],  # Admin LXMF hashes
-    announce=600,               # Announce interval in seconds (0 to disable)
-    announce_enabled=True,      # Enable/disable all announces
-    hot_reloading=True,         # Enable hot reloading
-    rate_limit=5,               # Messages per minute
-    cooldown=60,                # Seconds between commands
-    max_warnings=3,             # Warnings before ban
-    warning_timeout=300,        # Warning reset time (seconds)
-    first_message_enabled=True, # Enable first message handler
-    storage_type="sqlite",      # Use SQLite storage backend
-    storage_path="mybot.db"     # SQLite database path
-)</code></pre>
-            </div>
-        </section>
-
-        <section id="permissions">
-            <h2><a href="#permissions">Permission System</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>Basic Setup</h4>
-                    <div class="code-block">
-<pre><code class="language-python">from lxmfy import LXMFBot, DefaultPerms
-
-bot = LXMFBot(
-    name="MyBot",
-    command_prefix="/",
-    admins=["admin_hash_here"],
-    announce=600,
-    permissions_enabled=True  # Enable the permission system
-)
-
-# Create moderator role with specific permissions
-bot.permissions.create_role(
-    name="moderator",
-    permissions=(
-        DefaultPerms.USE_BOT |
-        DefaultPerms.SEND_MESSAGES |
-        DefaultPerms.USE_COMMANDS |
-        DefaultPerms.MANAGE_USERS
-    ),
-    priority=50,  # Higher than default user, lower than admin
-    description="Can manage users and messages"
-)
-
-# Assign moderator role to specific LXMF hashes
-MODERATORS = [
-    "moderator_hash_1",
-    "moderator_hash_2"
-]
-
-for mod_hash in MODERATORS:
-    bot.permissions.assign_role(mod_hash, "moderator")</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Permission-Based Commands</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@bot.command(
-    name="hello",
-    description="Say hello",
-    permissions=DefaultPerms.USE_COMMANDS
-)
-def hello(ctx):
-    ctx.reply("Hello!")
-
-@bot.command(
-    name="ban",
-    description="Ban a user",
-    permissions=DefaultPerms.MANAGE_USERS
-)
-def ban(ctx, user_hash):
-    if not ctx.bot.permissions.has_permission(
-        ctx.sender, 
-        DefaultPerms.MANAGE_USERS
-    ):
-        ctx.reply("You don't have permission to ban users")
-        return
-    
-    ctx.bot.spam_protection.ban_user(user_hash)
-    ctx.reply(f"User {user_hash} banned")</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Role Management</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@bot.command(
-    name="roles",
-    description="List roles for a user",
-    permissions=DefaultPerms.MANAGE_USERS
-)
-def list_roles(ctx, user_hash=None):
-    user = user_hash or ctx.sender
-    if user in bot.permissions.user_roles:
-        roles = ", ".join(bot.permissions.user_roles[user])
-        ctx.reply(f"Roles for {user}: {roles}")
-    else:
-        ctx.reply(f"No custom roles for {user}")</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Default Permissions</h4>
-                    <ul>
-                        <li><code>USE_BOT</code> - Basic bot usage</li>
-                        <li><code>SEND_MESSAGES</code> - Send messages</li>
-                        <li><code>USE_COMMANDS</code> - Use commands</li>
-                        <li><code>MANAGE_USERS</code> - User management</li>
-                        <li><code>MANAGE_ROLES</code> - Role management</li>
-                        <li><code>MANAGE_BOT</code> - Bot configuration</li>
-                        <li><code>VIEW_STATS</code> - View statistics</li>
-                    </ul>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Features</h4>
-                    <ul>
-                        <li>Role-based access control</li>
-                        <li>Hierarchical permissions</li>
-                        <li>Permission inheritance</li>
-                        <li>Priority system</li>
-                        <li>Custom role creation</li>
-                        <li>Persistent storage</li>
-                        <li>Command integration</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="commands">
-            <h2><a href="#commands">Creating Commands</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>Basic Commands</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@bot.command(
-    name="greet",
-    description="Greet a user",
-    admin_only=False
-)
-def greet(ctx):
-    # Context attributes:
-    # ctx.bot - Bot instance
-    # ctx.sender - Sender hash
-    # ctx.content - Full message
-    # ctx.args - Command arguments
-    # ctx.is_admin - Admin status
-    # ctx.reply() - Reply function
-    # ctx.message - Raw message
-    ctx.reply(f"Hello {ctx.sender}!")</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Admin Commands</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@bot.command(name="admin", admin_only=True)
-def admin_only(ctx):
-    ctx.reply("Admin command executed")</code></pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="storage">
-            <h2><a href="#storage">Storage System</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>Storage Configuration</h4>
-                    <div class="code-block">
-<pre><code class="language-python"># JSON Storage (Default)
-bot = LXMFBot(
-    name="MyBot",
-    storage_type="json",
-    storage_path="storage.json"
-)
-
-# SQLite Storage
-bot = LXMFBot(
-    name="MyBot",
-    storage_type="sqlite",
-    storage_path="mybot.db"
-)</code></pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="cogs">
-            <h2><a href="#cogs">Using Cogs</a></h2>
-            <div class="reference-card">
-                <h4>Creating a Cog</h4>
-                <div class="code-block">
-<pre><code class="language-python">from lxmfy import Cog, Command
-
-class MyCog(Cog):
-    def __init__(self, bot):
-        self.bot = bot
-    
-    @Command(
-        name="mycmd",
-        description="Cog command",
-        admin_only=False
-    )
-    def mycmd(self, ctx):
-        ctx.reply("Command from cog!")
-
-# Load the cog
-bot.add_cog(MyCog(bot))
-
-# Hot reload support
-bot.load_extension("cogs.mycog")</code></pre>
-                </div>
-            </div>
-        </section>
-
-        <section id="events">
-            <h2><a href="#events">Event System</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>Event Handling</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@bot.events.on("message_received")
-def on_message(event):
-    print(f"Message from: {event.data['sender']}")
-    print(f"Content: {event.data['content']}")
-
-@bot.events.on("custom_event", priority=EventPriority.HIGH)
-def handle_custom_event(event):
-    print(f"Custom event data: {event.data}")
-
-# Dispatch custom event
-bot.events.dispatch(Event("custom_event", {
-    "foo": "bar"
-}))</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Event Middleware</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@bot.events.middleware
-def log_events(event, next):
-    print(f"Event {event.name} started")
-    next()
-    print(f"Event {event.name} completed")
-
-@bot.events.middleware("message_received")
-def filter_messages(event, next):
-    if not event.data['content'].startswith('spam'):
-        next()</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Built-in Events</h4>
-                    <ul>
-                        <li><code>message_received</code> - New message received</li>
-                        <li><code>command_executed</code> - Command execution</li>
-                        <li><code>error</code> - Error occurred</li>
-                        <li><code>startup</code> - Bot startup</li>
-                        <li><code>shutdown</code> - Bot shutdown</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="moderation">
-            <h2><a href="#moderation">Moderation Tools</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>User Management</h4>
-                    <ul>
-                        <li><code>/ban &lt;hash&gt;</code> - Ban a user</li>
-                        <li><code>/unban &lt;hash&gt;</code> - Unban a user</li>
-                        <li><code>/stats</code> - View usage statistics</li>
-                    </ul>
-                </div>
-                <div class="reference-card">
-                    <h4>Rate Limiting</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@bot.command(name="limited")
-@cooldown(rate=1, per=60)  # Once per minute
-def limited_command(ctx):
-    ctx.reply("Rate limited command")</code></pre>
-                </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="transport">
-            <h2><a href="#transport">Transport System</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>Basic Usage</h4>
-                    <div class="code-block">
-<pre><code class="language-python">from lxmfy import Transport
-
-transport = Transport(storage)
-
-# Establish a link
-link = transport.establish_link(destination_hash, timeout=15)
-
-# Register handlers
-@transport.register_path_handler
-def handle_path(path_info):
-    print(f"New path: {path_info}")
-
-@transport.register_request_handler("request_type")
-def handle_request(request):
-    print(f"New request: {request}")
-
-# Cleanup inactive links
-transport.cleanup()</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Path Information</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@dataclass
-class PathInfo:
-    next_hop: Optional[bytes]  # Next hop in path
-    hops: int                  # Number of hops
-    updated_at: int           # Last update timestamp
-
-# Load and save paths
-transport.load_paths()
-transport.save_paths()</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Features</h4>
-                    <ul>
-                        <li>Automatic path discovery</li>
-                        <li>Link caching and management</li>
-                        <li>Path persistence</li>
-                        <li>Request handling</li>
-                        <li>Error handling & logging</li>
-                        <li>Configurable timeouts</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="middleware">
-            <h2><a href="#middleware">Middleware System</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>Basic Usage</h4>
-                    <div class="code-block">
-<pre><code class="language-python">from lxmfy import LXMFBot, MiddlewareType
-
-bot = LXMFBot(name="MyBot")
-
-@bot.middleware.register(MiddlewareType.PRE_COMMAND)
-def log_commands(ctx):
-    print(f"Command received: {ctx.data}")
-    return ctx.data
-
-@bot.middleware.register(MiddlewareType.POST_COMMAND)
-def handle_errors(ctx):
-    if ctx.error:
-        print(f"Error in command: {ctx.error}")
-    return ctx.data</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Middleware Types</h4>
-                    <ul>
-                        <li><code>PRE_COMMAND</code> - Before command execution</li>
-                        <li><code>POST_COMMAND</code> - After command execution</li>
-                        <li><code>PRE_MESSAGE</code> - Before message processing</li>
-                        <li><code>POST_MESSAGE</code> - After message processing</li>
-                        <li><code>ERROR</code> - Error handling middleware</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="scheduler">
-            <h2><a href="#scheduler">Task Scheduler</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>Scheduling Tasks</h4>
-                    <div class="code-block">
-<pre><code class="language-python">@bot.scheduler.schedule("cleanup", "0 */2 * * *")  # Every 2 hours
-def cleanup_task():
-    print("Running cleanup...")
-
-@bot.scheduler.schedule("backup", "0 0 * * *")  # Daily at midnight
-def backup_task():
-    bot.storage.backup()
-
-# One-time task
-bot.scheduler.schedule_once("notification", 
-    lambda: print("Task complete!"), 
-    delay=3600  # 1 hour
-)</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Task Management</h4>
-                    <div class="code-block">
-<pre><code class="language-python"># List all tasks
-tasks = bot.scheduler.list_tasks()
-
-# Cancel task
-bot.scheduler.cancel_task("cleanup")
-
-# Pause/Resume task
-bot.scheduler.pause_task("backup")
-bot.scheduler.resume_task("backup")
-
-# Task status
-status = bot.scheduler.get_task_status("backup")</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Cron Expressions</h4>
-                    <ul>
-                        <li><code>* * * * *</code> - Every minute</li>
-                        <li><code>0 * * * *</code> - Every hour</li>
-                        <li><code>0 0 * * *</code> - Every day at midnight</li>
-                        <li><code>0 0 * * 0</code> - Every Sunday</li>
-                        <li><code>0 0 1 * *</code> - First of every month</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="attachments">
-            <h2><a href="#attachments">Attachment System</a></h2>
-            <div class="reference-grid">
-                <div class="reference-card">
-                    <h4>Basic Usage</h4>
-                    <div class="code-block">
-<pre><code class="language-python">from lxmfy import LXMFBot, Attachment, AttachmentType
-
-bot = LXMFBot(name="MyBot")
-
-@bot.command(name="send_file")
-def send_file(ctx):
-    # Create a file attachment
-    with open("example.txt", "rb") as f:
-        data = f.read()
-        attachment = Attachment(
-            type=AttachmentType.FILE,
-            name="example.txt",
-            data=data
-        )
-    
-    # Send message with attachment
-    bot.send_with_attachment(
-        ctx.sender,
-        "Here's your file!",
-        attachment
-    )</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Attachment Types</h4>
-                    <div class="code-block">
-<pre><code class="language-python">from lxmfy import AttachmentType
-
-# Available types
-AttachmentType.FILE   # For general files
-AttachmentType.IMAGE  # For image files
-AttachmentType.AUDIO  # For audio files
-
-# Image example
-image_attachment = Attachment(
-    type=AttachmentType.IMAGE,
-    name="picture.webp",
-    data=image_data,
-    format="webp"  # Optional format for images
-)
-
-# Audio example
-audio_attachment = Attachment(
-    type=AttachmentType.AUDIO,
-    name="sound.mp3",
-    data=audio_data,
-    format="0"  # Audio mode as string
-)</code></pre>
-                    </div>
-                </div>
-
-                <div class="reference-card">
-                    <h4>Features</h4>
-                    <ul>
-                        <li>Support for file attachments</li>
-                        <li>Image attachment support (WebP format)</li>
-                        <li>Audio attachment support</li>
-                        <li>Automatic attachment packing</li>
-                        <li>Integration with LXMF fields</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+        <div id="doc-content"></div>
     </main>
 
     <div id="footer-placeholder"></div>
 
+    <!-- Marked.js -->
+    <script src="/vendor/marked/marked.min.js"></script>
     <!-- Prism JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="/vendor/prism/prism.min.js"></script>
+    <script src="/vendor/prism/prism-python.min.js"></script>
+    <!-- Fuse.js -->
+    <script src="/vendor/fuse/fuse.min.js"></script>
     
     <script>
+        // Configure Marked.js
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang === 'python') {
+                    return Prism.highlight(code, Prism.languages.python, 'python');
+                }
+                return code;
+            },
+            breaks: true,
+            gfm: true
+        });
+
+        // Fetch and render documentation
+        async function loadDocumentation() {
+            const docContent = document.getElementById('doc-content');
+            const docs = [
+                { name: 'Quick Start', file: 'quick-start.md' },
+                { name: 'Creating Bots', file: 'creating-bots.md' },
+                { name: 'API Reference', file: 'api.md' }
+            ];
+
+            for (const doc of docs) {
+                try {
+                    const response = await fetch(`https://raw.githubusercontent.com/lxmfy/LXMFy/main/docs/${doc.file}`);
+                    if (!response.ok) throw new Error(`Failed to load ${doc.file}`);
+                    
+                    const markdown = await response.text();
+                    const section = document.createElement('section');
+                    section.id = doc.file.replace('.md', '');
+                    
+                    // Create section content
+                    const sectionContent = document.createElement('div');
+                    sectionContent.className = 'markdown-content';
+                    sectionContent.innerHTML = marked.parse(markdown);
+                    
+                    // Add section title
+                    const title = document.createElement('h2');
+                    title.innerHTML = `<a href="#${section.id}">${doc.name}</a>`;
+                    
+                    // Append elements
+                    section.appendChild(title);
+                    section.appendChild(sectionContent);
+                    docContent.appendChild(section);
+                    
+                    // Add IDs to all headings in the markdown content
+                    sectionContent.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
+                        const id = heading.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                        heading.id = id;
+                        heading.innerHTML = `<a href="#${id}">${heading.textContent}</a>`;
+                    });
+                } catch (error) {
+                    console.error(`Error loading ${doc.file}:`, error);
+                }
+            }
+
+            // Initialize search functionality
+            initializeSearch();
+        }
+
+        // Initialize search functionality
+        function initializeSearch() {
+            const searchInput = document.getElementById('doc-search');
+            const searchResults = document.getElementById('search-results');
+            const sections = document.querySelectorAll('section');
+            
+            // Create searchable content
+            const searchableContent = [];
+            sections.forEach(section => {
+                const title = section.querySelector('h2')?.textContent || '';
+                const content = section.textContent;
+                const headings = Array.from(section.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+                    .map(h => h.textContent);
+                
+                searchableContent.push({
+                    title,
+                    content,
+                    headings,
+                    id: section.id
+                });
+            });
+
+            // Initialize Fuse.js
+            const fuse = new Fuse(searchableContent, {
+                keys: ['title', 'content', 'headings'],
+                threshold: 0.3,
+                distance: 100,
+                includeScore: true,
+                minMatchCharLength: 2
+            });
+
+            // Keep search results visible when clicking inside
+            searchResults.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Prevent search input from closing results
+            searchInput.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value;
+                searchResults.innerHTML = '';
+                
+                if (searchTerm.length < 2) {
+                    searchResults.style.display = 'none';
+                    sections.forEach(section => section.style.display = 'block');
+                    return;
+                }
+                
+                const results = fuse.search(searchTerm);
+                
+                if (results.length > 0) {
+                    searchResults.style.display = 'block';
+                    results.forEach(result => {
+                        const { item, score } = result;
+                        const resultElement = document.createElement('div');
+                        resultElement.className = 'search-result';
+                        
+                        // Create heading links if they match the search term
+                        const headingLinks = item.headings
+                            .filter(h => h.toLowerCase().includes(searchTerm.toLowerCase()))
+                            .map(h => `<a href="#${h.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${h}</a>`)
+                            .join(' | ');
+                        
+                        resultElement.innerHTML = `
+                            <h4><a href="#${item.id}">${item.title}</a></h4>
+                            ${headingLinks ? `<div class="heading-links">${headingLinks}</div>` : ''}
+                            <p>${item.content.slice(0, 150)}...</p>
+                        `;
+                        searchResults.appendChild(resultElement);
+                    });
+                } else {
+                    searchResults.style.display = 'block';
+                    searchResults.innerHTML = '<div class="no-results">No results found</div>';
+                }
+            });
+            
+            // Only hide search results when clicking outside both search container and results
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-container') && !e.target.closest('.search-results')) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+
+        // Load header and footer
         fetch('_includes/header.html')
             .then(response => response.text())
             .then(data => {
@@ -633,76 +247,20 @@ audio_attachment = Attachment(
                 document.getElementById('footer-placeholder').innerHTML = data;
             });
 
-        const searchDocs = () => {
-            const searchInput = document.getElementById('doc-search');
-            const searchResults = document.getElementById('search-results');
-            const sections = document.querySelectorAll('section:not(.search-section)');
-            
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                searchResults.innerHTML = '';
-                
-                if (searchTerm.length < 2) {
-                    searchResults.style.display = 'none';
-                    sections.forEach(section => section.style.display = 'block');
-                    return;
-                }
-                
-                let results = [];
-                sections.forEach(section => {
-                    const title = section.querySelector('h2, h3')?.textContent || '';
-                    const content = section.textContent;
-                    
-                    if (title.toLowerCase().includes(searchTerm) || 
-                        content.toLowerCase().includes(searchTerm)) {
-                        results.push({
-                            title: title,
-                            id: section.id,
-                            preview: content.slice(0, 150) + '...'
-                        });
-                        section.style.display = 'block';
-                    } else {
-                        section.style.display = 'none';
-                    }
-                });
-                
-                if (results.length > 0) {
-                    searchResults.style.display = 'block';
-                    results.forEach(result => {
-                        const resultElement = document.createElement('div');
-                        resultElement.className = 'search-result';
-                        resultElement.innerHTML = `
-                            <h4><a href="#${result.id}">${result.title}</a></h4>
-                            <p>${result.preview}</p>
-                        `;
-                        searchResults.appendChild(resultElement);
-                    });
-                } else {
-                    searchResults.style.display = 'block';
-                    searchResults.innerHTML = '<div class="no-results">No results found</div>';
-                }
-            });
-            
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.search-container')) {
-                    searchResults.style.display = 'none';
-                }
-            });
-        };
-
-        searchDocs();
+        // Load documentation
+        loadDocumentation();
 
         // Register Service Worker
         if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-              .then(registration => {
-                console.log('Service Worker registered successfully:', registration.scope);
-              })
-              .catch(error => {
-                console.log('Service Worker registration failed:', error);
-              });
-          });
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
         }
     </script>
 </body>

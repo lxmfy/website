@@ -9,10 +9,14 @@ const urlsToCache = [
   '/assets/logo.svg',
   '/assets/logo-192.png',
   '/assets/logo-512.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css',
-  'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js'
+  '/vendor/prism/prism-tomorrow.min.css',
+  '/vendor/prism/prism.min.js',
+  '/vendor/prism/prism-python.min.js',
+  '/vendor/clipboard/clipboard.min.js',
+  '/vendor/marked/marked.min.js',
+  'https://raw.githubusercontent.com/lxmfy/LXMFy/main/docs/quick-start.md',
+  'https://raw.githubusercontent.com/lxmfy/LXMFy/main/docs/creating-bots.md',
+  'https://raw.githubusercontent.com/lxmfy/LXMFy/main/docs/api.md'
 ];
 
 self.addEventListener('install', event => {
@@ -52,6 +56,31 @@ self.addEventListener('fetch', event => {
   // For API requests (like GitHub version check), always fetch from network
   if (event.request.url.includes('api.github.com')) {
     event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // For GitHub raw content, use network-first strategy
+  if (event.request.url.includes('raw.githubusercontent.com')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(networkResponse => {
+          if (!networkResponse || networkResponse.status !== 200) {
+            return networkResponse;
+          }
+          
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              console.log('[ServiceWorker] Caching GitHub content', event.request.url);
+              cache.put(event.request, responseToCache);
+            });
+          
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match(event.request);
+        })
+    );
     return;
   }
 
