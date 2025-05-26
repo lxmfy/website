@@ -427,6 +427,13 @@ footer {
     color: var(--text-secondary);
 }
 
+.slide .author {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
 @keyframes carousel {
     0% {
         transform: translateX(0);
